@@ -118,6 +118,32 @@ function handleJsonImport(e) {
   reader.onload = function (evt) {
     try {
       const json = JSON.parse(evt.target.result);
+
+      // 检查是否是国染委 ID 列表格式（每项只有 id）
+      if (Array.isArray(json) && json.every(x => typeof x === 'object' && Object.keys(x).length === 1 && x.id)) {
+        const ids = json.map(x => x.id.replace(/[-_]/g, '').toLowerCase());
+        const matched = Object.values(roleData).filter(entry => {
+          const norm = (entry.id || '').replace(/[-_]/g, '').toLowerCase();
+          return ids.includes(norm);
+        });
+
+        if (matched.length === 0) {
+          alert("未能从 roletable.json 中匹配任何角色");
+          return;
+        }
+
+        const blob = new Blob([JSON.stringify(matched, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById('downloadLink');
+        link.href = url;
+        link.download = "converted.json";
+        link.style.display = 'inline-block';
+        link.textContent = "点击下载转换后的 JSON 文件";
+        alert(`国染委格式已转换，匹配到 ${matched.length} 个角色`);
+        return;
+      }
+
+      // 否则当作完整剧本导入处理
       const meta = json.find(x => x.id === '_meta');
       const others = json.filter(x => x.id !== '_meta');
 
@@ -143,6 +169,7 @@ function handleJsonImport(e) {
     }
   };
   reader.readAsText(file);
+}
 }
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('importJson').addEventListener('change', handleJsonImport);
