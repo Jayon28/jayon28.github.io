@@ -120,7 +120,7 @@ function handleJsonImport(e) {
       const json = JSON.parse(evt.target.result);
 
       // 检查是否是国染委 ID 列表格式（每项只有 id）
-      if (Array.isArray(json) && json.every(x => typeof x === 'object' && Object.keys(x).length === 1 && 'id' in x)) {
+      if (Array.isArray(json) && json.every(x => typeof x === 'object' && Object.keys(x).length === 1 && x.id)) {
         const ids = json.map(x => x.id.replace(/[-_]/g, '').toLowerCase());
         const matched = Object.values(roleData).filter(entry => {
           const norm = (entry.id || '').replace(/[-_]/g, '').toLowerCase();
