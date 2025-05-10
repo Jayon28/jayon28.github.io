@@ -1,28 +1,20 @@
-// 存储加载的角色库数据（按 name 映射）
+// 存储角色库
 const roleData = {};
 
-// 读取多个 json 文件（data.json / custom.json / roletable.json）
-function loadFiles() {
-  const files = document.getElementById('fileInput').files;
-  if (!files.length) return alert("请先选择 JSON 文件");
-
-  [...files].forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const json = JSON.parse(e.target.result);
+// 自动从本地静态 JSON 文件加载角色数据
+function fetchLocalJSONs() {
+  const files = ['data.json', 'custom.json', 'roletable.json'];
+  files.forEach(file => {
+    fetch(file)
+      .then(res => res.json())
+      .then(json => {
         json.forEach(entry => {
-          if (entry.name) {
-            roleData[entry.name] = entry;
-          }
+          if (entry.name) roleData[entry.name] = entry;
         });
-        alert(`成功加载 ${file.name}`);
+        console.log(`已加载本地 ${file}`);
         updateRoleSuggestions();
-      } catch (err) {
-        alert(`解析 ${file.name} 失败：` + err);
-      }
-    };
-    reader.readAsText(file);
+      })
+      .catch(err => console.error(`加载 ${file} 失败:`, err));
   });
 }
 
@@ -34,7 +26,14 @@ function addStateRow() {
   container.appendChild(row);
 }
 
-// 构造最终 JSON 并生成下载
+// 更新 datalist 自动补全
+function updateRoleSuggestions() {
+  const datalist = document.getElementById("roleSuggestions");
+  if (!datalist) return;
+  datalist.innerHTML = Object.keys(roleData).sort().map(name => `<option value="${name}">`).join("");
+}
+
+// 生成剧本 JSON 并提供下载
 function generateScript() {
   const title = document.getElementById('title').value;
   const author = document.getElementById('author').value;
@@ -59,16 +58,15 @@ function generateScript() {
   };
 
   if (document.getElementById('addStates').checked) {
-    const stateBlocks = [...document.querySelectorAll('.stateName')].map((_, i) => {
+    const states = [...document.querySelectorAll('.stateName')].map((_, i) => {
       return {
         stateName: document.querySelectorAll('.stateName')[i].value,
         stateDescription: document.querySelectorAll('.stateDesc')[i].value
       };
     }).filter(s => s.stateName && s.stateDescription);
-    if (stateBlocks.length) meta.state = stateBlocks;
+    if (states.length) meta.state = states;
   }
 
-  // 处理角色和组合
   const filtered = [];
   const notFound = [];
   const set = new Set();
@@ -102,12 +100,33 @@ function generateScript() {
   const finalData = [meta, ...filtered];
   if (notFound.length > 0) alert("未找到的角色：\n" + notFound.join(", "));
 
-  // 生成文件下载
   const blob = new Blob([JSON.stringify(finalData, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.getElementById('downloadLink');
   link.href = url;
   link.download = title + ".json";
-  link.style.display = 'block';
+  link.style.display = 'inline-block';
   link.textContent = `点击下载：${title}.json`;
 }
+
+// 支持自动补全角色输入框
+window.addEventListener('DOMContentLoaded', () => {
+  fetchLocalJSONs();
+
+  const input = document.getElementById("roleInput");
+  const textarea = document.getElementById("roles");
+  input.addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      const name = input.value.trim();
+      if (name) {
+        const current = textarea.value.trim();
+        const parts = current ? current.split(/\s+/) : [];
+        if (!parts.includes(name)) {
+          textarea.value = (current ? current + ' ' : '') + name;
+        }
+        input.value = '';
+      }
+    }
+  });
+});
