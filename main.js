@@ -57,14 +57,13 @@ function generateScript() {
     "a jinxed": "相克"
   };
 
-  if (document.getElementById('addStates').checked) {
-    const states = [...document.querySelectorAll('.stateName')].map((_, i) => {
-      return {
-        stateName: document.querySelectorAll('.stateName')[i].value,
-        stateDescription: document.querySelectorAll('.stateDesc')[i].value
-      };
-    }).filter(s => s.stateName && s.stateDescription);
-    if (states.length) meta.state = states;
+  const states = [...document.querySelectorAll('.stateName')].map((_, i) => {
+    return {
+      stateName: document.querySelectorAll('.stateName')[i].value,
+      stateDescription: document.querySelectorAll('.stateDesc')[i].value
+    };
+  }).filter(s => s.stateName && s.stateDescription);
+  if (states.length) meta.state = states;
   }
 
   const filtered = [];
@@ -118,6 +117,22 @@ function handleJsonImport(e) {
   reader.onload = function (evt) {
     try {
       const json = JSON.parse(evt.target.result);
+
+      
+        }
+
+        const blob = new Blob([JSON.stringify(matched, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById('downloadLink');
+        link.href = url;
+        link.download = "converted.json";
+        link.style.display = 'inline-block';
+        link.textContent = "点击下载转换后的 JSON 文件";
+        alert(`国染委格式已转换，匹配到 ${matched.length} 个角色`);
+        return;
+      }
+
+      // 否则当作完整剧本导入处理
       const meta = json.find(x => x.id === '_meta');
       const others = json.filter(x => x.id !== '_meta');
 
@@ -143,6 +158,7 @@ function handleJsonImport(e) {
     }
   };
   reader.readAsText(file);
+}
 }
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('importJson').addEventListener('change', handleJsonImport);
