@@ -109,8 +109,43 @@ function generateScript() {
   link.textContent = `点击下载：${title}.json`;
 }
 
-// 支持自动补全角色输入框
+// 处理上传的 JSON 文件并填入页面字段
+function handleJsonImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (evt) {
+    try {
+      const json = JSON.parse(evt.target.result);
+      const meta = json.find(x => x.id === '_meta');
+      const others = json.filter(x => x.id !== '_meta');
+
+      if (meta) {
+        document.getElementById('title').value = meta.name || '';
+        document.getElementById('author').value = meta.author || '';
+        document.getElementById('logo').value = meta.logo || '';
+        if (meta.state) {
+          meta.state.forEach(state => {
+            addStateRow();
+            const lastRow = document.querySelectorAll('#stateContainer div:last-child input');
+            lastRow[0].value = state.stateName;
+            lastRow[1].value = state.stateDescription;
+          });
+          document.getElementById('addStates').checked = true;
+        }
+      }
+
+      document.getElementById('roles').value = others.map(x => x.name).join(' ');
+      alert('JSON 剧本已载入页面');
+    } catch (err) {
+      alert('解析 JSON 失败：' + err);
+    }
+  };
+  reader.readAsText(file);
+}
 window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('importJson').addEventListener('change', handleJsonImport);
   fetchLocalJSONs();
 
   const input = document.getElementById("roleInput");
@@ -130,4 +165,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
 window.addEventListener('DOMContentLoaded', fetchLocalJSONs);
