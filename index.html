@@ -1,59 +1,127 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>剧本生成器2.0 By Jayon</title>
-  <link rel="stylesheet" href="style.css">
+  <title>剧本生成器 By Jayon</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s infinite alternate;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      font-size: 1.2rem;
+      padding: 0.8rem 2rem;
+      background: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .btn:hover {
+      background: #e8584f;
+      transform: translateY(-3px);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff6a00; }
+      to { text-shadow: 0 0 20px #ee0979; }
+    }
+      @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+      .btn {
+        font-size: 1rem;
+        padding: 0.7rem 1.5rem;
+      }
+      .container {
+        width: 90%;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const colors = ['#ff6a00', '#ee0979', '#42a5f5', '#66bb6a', '#ffd600'];
+      let i = 0;
+      setInterval(() => {
+        document.body.style.background = `linear-gradient(135deg, ${colors[i % colors.length]}, ${colors[(i+1) % colors.length]})`;
+        i++;
+      }, 4000);
+    });
+  </script>
 </head>
 <body>
-  <h1>剧本生成器2.0 By Jayon</h1>
-
-  <label>剧本标题：<input type="text" id="title"></label>
-  <label>作者：<input type="text" id="author"></label>
-  <label>LOGO链接：<input type="text" id="logo" value="https://www.helloimg.com/i/2024/07/18/669889e8484e6.png"></label>
-
-  <label>角色列表（空格分隔）：</label>
-  <textarea id="roles" rows="4" style="width: 100%;"></textarea>
-
-  <div id="stateContainer"></div>
-  <button onclick="addStateRow()">添加状态</button>
-  <label>导入剧本 JSON：<input type="file" id="importJson"></label>
-
-<!--
-  <br>
- <label>上传数据文件（data.json/custom.json/roletable.json）：<input type="file" id="fileInput" multiple></label>
-  <button onclick="loadFiles()">读取数据</button>
--->
-  <br>
-  <button onclick="generateScript()">生成 JSON 文件</button>
-
-  <a id="downloadLink" style="display: none;">下载剧本</a>
-
-  <script src="main.js"></script>
+  <div class="container" style="backdrop-filter: blur(10px); background-color: rgba(255,255,255,0.25); padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+    <h1>剧本生成器 By Jayon ✨</h1>
+    <p>欢迎来到你自己的剧本创作空间</p>
+    <button class="btn" onclick="location.href='jsgen.html'">进入创作</button>
+      <p style="font-size: 0.9rem; margin-top: 1.5rem; color: #444;">📱 本页面已优化移动体验，轻触按钮开启创作之旅</p>
+  </div>
+  <canvas id="bgCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
   <script>
-    // 自动补全支持
-    const datalist = document.getElementById("roleSuggestions");
-    const textarea = document.getElementById("roles");
-    const input = document.getElementById("roleInput");
-  
-    input.addEventListener("keydown", (e) => {
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        const name = input.value.trim();
-        if (name) {
-          const current = textarea.vue.trim();
-          const parts = current ? current.split(/\\s+/) : [];
-          if (!parts.includes(name)) {
-            textarea.value = (current ? current + ' ' : '') + name;
-          }
-          input.value = '';
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const stars = Array.from({length: 80}, () => ({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*1.5 + 0.5,
+      d: Math.random()*2 + 0.5
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        s.y += s.d;
+        if (s.y > canvas.height) {
+          s.y = 0;
+          s.x = Math.random() * canvas.width;
         }
-      }
-    });
-  
-    function updateRoleSuggestions() {
-      datalist.innerHTML = Object.keys(roleData).sort().map(name => `<option value="${name}">`).join("");
+      });
+      requestAnimationFrame(draw);
     }
+    draw();
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
