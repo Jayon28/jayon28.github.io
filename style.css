@@ -22,9 +22,13 @@ body {
     font-weight: bold;
   }
   
-  input[type="text"],
-  textarea {
-    min-height: 150px;
+  
+  
+  #roles {
+    font-size: 1.3rem;
+    min-height: 240px;
+    height: auto;
+    overflow-y: hidden;
     height: auto;
     overflow-y: hidden;
   }
@@ -123,6 +127,12 @@ body {
   
   /* 移动端自适应 + 夜间模式准备 */
   @media (max-width: 600px) {
+    #roles {
+      font-size: 1.5rem;
+    }
+    html {
+      font-size: 22px;
+    }
     input[type="text"],
     textarea,
     input[type="file"] {
@@ -131,17 +141,17 @@ body {
     }
   
     label {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
     html {
       font-size: 20px;
     }
     body {
-      padding: 1rem;
+      padding: 1.5rem;
     }
   
     h1 {
-      font-size: 1.8em;
+      font-size: 2em;
     }
   
     #stateContainer div {
@@ -151,7 +161,7 @@ body {
     button,
     #downloadLink {
       width: 100%;
-      font-size: 1.25rem;
+      font-size: 1.4rem;
     }
   
     .logo {
