@@ -23,6 +23,12 @@ body {
   }
   
   input[type="text"],
+  textarea {
+    min-height: 150px;
+    height: auto;
+    overflow-y: hidden;
+  }
+  
   textarea,
   input[type="file"] {
     width: 100%;
@@ -117,15 +123,25 @@ body {
   
   /* 移动端自适应 + 夜间模式准备 */
   @media (max-width: 600px) {
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+      font-size: 1.2rem;
+      padding: 0.8rem;
+    }
+  
+    label {
+      font-size: 1.1rem;
+    }
     html {
-      font-size: 18px;
+      font-size: 20px;
     }
     body {
       padding: 1rem;
     }
   
     h1 {
-      font-size: 1.5em;
+      font-size: 1.8em;
     }
   
     #stateContainer div {
@@ -135,7 +151,7 @@ body {
     button,
     #downloadLink {
       width: 100%;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
   
     .logo {
