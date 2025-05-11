@@ -57,15 +57,13 @@ function generateScript() {
     "a jinxed": "相克"
   };
 
-  if (document.getElementById('addStates').checked) {
-    const states = [...document.querySelectorAll('.stateName')].map((_, i) => {
-      return {
-        stateName: document.querySelectorAll('.stateName')[i].value,
-        stateDescription: document.querySelectorAll('.stateDesc')[i].value
-      };
-    }).filter(s => s.stateName && s.stateDescription);
-    if (states.length) meta.state = states;
-  }
+  const states = [...document.querySelectorAll('.stateName')].map((_, i) => {
+    return {
+      stateName: document.querySelectorAll('.stateName')[i].value,
+      stateDescription: document.querySelectorAll('.stateDesc')[i].value
+    };
+  }).filter(s => s.stateName && s.stateDescription);
+  if (states.length) meta.state = states;
 
   const filtered = [];
   const notFound = [];
@@ -109,8 +107,45 @@ function generateScript() {
   link.textContent = `点击下载：${title}.json`;
 }
 
-// 支持自动补全角色输入框
+// 处理上传的 JSON 文件并填入页面字段
+function handleJsonImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (evt) {
+    try {
+      const json = JSON.parse(evt.target.result);
+      const meta = json.find(x => x.id === '_meta');
+      const others = json.filter(x => x.id !== '_meta');
+
+      if (meta) {
+        document.getElementById('title').value = meta.name || '';
+        document.getElementById('author').value = meta.author || '';
+        document.getElementById('logo').value = meta.logo || '';
+        if (meta.state) {
+          meta.state.forEach(state => {
+            addStateRow();
+            const lastRow = document.querySelectorAll('#stateContainer div:last-child input');
+            if (lastRow.length >= 2) {
+              lastRow[0].value = state.stateName;
+              lastRow[1].value = state.stateDescription;
+            }
+          });
+        }
+      }
+
+      document.getElementById('roles').value = others.map(x => x.name).join(' ');
+      alert('JSON 剧本已载入页面');
+    } catch (err) {
+      alert('解析 JSON 失败：' + err);
+    }
+  };
+  reader.readAsText(file);
+}
 window.addEventListener('DOMContentLoaded', () => {
+  fetchLocalJSONs();
+  document.getElementById('importJson').addEventListener('change', handleJsonImport);
   fetchLocalJSONs();
 
   const input = document.getElementById("roleInput");
@@ -130,4 +165,4 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-window.addEventListener('DOMContentLoaded', fetchLocalJSONs);
+
