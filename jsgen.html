@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>剧本生成器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>剧本生成器</h1>
+
+  <label>剧本标题：<input type="text" id="title"></label>
+  <label>作者：<input type="text" id="author"></label>
+  <label>LOGO链接：<input type="text" id="logo" value="https://www.helloimg.com/i/2024/07/18/669889e8484e6.png"></label>
+
+  <label>角色列表（空格分隔）：</label>
+  <textarea id="roles" rows="4" style="width: 100%;"></textarea>
+
+  <div id="stateContainer"></div>
+  <button onclick="addStateRow()">添加状态</button>
+  <label>导入剧本 JSON：<input type="file" id="importJson"></label>
+
+<!--
+  <br>
+ <label>上传数据文件（data.json/custom.json/roletable.json）：<input type="file" id="fileInput" multiple></label>
+  <button onclick="loadFiles()">读取数据</button>
+-->
+  <br>
+  <button onclick="generateScript()">生成 JSON 文件</button>
+
+  <a id="downloadLink" style="display: none;">下载剧本</a>
+
+  <script src="main.js"></script>
+  <script>
+    // 自动补全支持
+    const datalist = document.getElementById("roleSuggestions");
+    const textarea = document.getElementById("roles");
+    const input = document.getElementById("roleInput");
+  
+    input.addEventListener("keydown", (e) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        const name = input.value.trim();
+        if (name) {
+          const current = textarea.vue.trim();
+          const parts = current ? current.split(/\\s+/) : [];
+          if (!parts.includes(name)) {
+            textarea.value = (current ? current + ' ' : '') + name;
+          }
+          input.value = '';
+        }
+      }
+    });
+  
+    function updateRoleSuggestions() {
+      datalist.innerHTML = Object.keys(roleData).sort().map(name => `<option value="${name}">`).join("");
+    }
+  </script>
+</body>
+</html>
