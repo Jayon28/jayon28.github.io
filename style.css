@@ -80,11 +80,14 @@ body {
   
   /* 下载链接样式 */
   #downloadLink {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+    background: #FFECB3;
     display: inline-block;
     margin-top: 1.5rem;
     padding: 0.7rem 1.2rem;
-    background: #2196F3;
-    color: white;
+    background: #FFB300;
+    color: black;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
@@ -92,7 +95,10 @@ body {
   }
   
   #downloadLink:hover {
-    background: #1976D2;
+    background: #FFE082;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    background: #FFA000;
   }
   
   /* Logo 角标 */
@@ -109,8 +115,11 @@ body {
     transform: scale(1.05);
   }
   
-  /* 移动端自适应 */
+  /* 移动端自适应 + 夜间模式准备 */
   @media (max-width: 600px) {
+    html {
+      font-size: 18px;
+    }
     body {
       padding: 1rem;
     }
@@ -131,6 +140,36 @@ body {
   
     .logo {
       width: 80px;
+    }
+  }
+  
+  /* 夜间模式支持（自动检测） */
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #1e1e1e;
+      color: #ddd;
+    }
+    input,
+    textarea,
+    input[type="file"] {
+      background-color: #2e2e2e;
+      color: #eee;
+      border: 1px solid #444;
+    }
+    button {
+      background-color: #3f9440;
+    }
+    button:hover {
+      background-color: #2f7d31;
+    }
+    #downloadLink {
+      background: #1565C0;
+    }
+    #downloadLink:hover {
+      background: #0d47a1;
+    }
+    .logo {
+      opacity: 0.7;
     }
   }
   
