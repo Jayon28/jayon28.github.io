@@ -1363,7 +1363,7 @@
         "setup": false
     },
     {
-        "id": "jiushigebaichi111",
+        "id": "village_idiot",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/village_idiot.png",
         "edition": "custom",
         "name": "村夫",
@@ -2681,7 +2681,7 @@
         "setup": false
     },
     {
-        "id": "youzhizhua11111111",
+        "id": "widow",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/widow.png",
         "edition": "custom",
         "name": "寡妇",
@@ -3276,7 +3276,7 @@
         "setup": false
     },
     {
-        "id": "yiqunshabiemo222",
+        "id": "legion",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/legion.png",
         "edition": "custom",
         "name": "军团",
