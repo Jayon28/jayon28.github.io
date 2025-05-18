@@ -3196,6 +3196,7 @@
         "otherNightReminder": "唤醒诺-达鲺，让他攻击一名玩家。",
         "reminders": [
             "死亡",
+            "中毒",
             "中毒"
         ],
         "setup": false
