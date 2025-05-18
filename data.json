@@ -2508,7 +2508,7 @@
         "setup": false
     },
     {
-        "id": "spy",
+        "id": "spy22",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/spy.png",
         "edition": "custom",
         "name": "间谍",
@@ -2694,7 +2694,7 @@
         "setup": false
     },
     {
-        "id": "widow",
+        "id": "widow22",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/widow.png",
         "edition": "custom",
         "name": "寡妇",
