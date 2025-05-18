@@ -1369,11 +1369,17 @@
         "setup": false
     },
     {
-        "id": "village_idiot",
+        "id": "village_idiot22",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/village_idiot.png",
         "edition": "custom",
         "name": "村夫",
         "ability": "每个夜晚，你要选择一名玩家：你会得知他的阵营。[+0~2村夫，复数村夫中有一人醉酒]",
+        "special": [
+        {
+            "name": "bag-duplicate",
+            "type": "selection"
+        }
+        ],
         "team": "townsfolk",
         "sch_team": "镇民",
         "firstNight": 54,
@@ -3305,11 +3311,17 @@
         "setup": false
     },
     {
-        "id": "legion",
+        "id": "legion22",
         "image": "https://oss.gstonegames.com/data_file/clocktower/web/icons/legion.png",
         "edition": "custom",
         "name": "军团",
         "ability": "每个夜晚*，可能有一名玩家死亡。如果一项提名只有邪恶玩家投票，投票无效。你也会被当作是爪牙。[多数玩家为军团]",
+    	"special": [
+	   {
+		  "name": "bag-duplicate",
+		  "type": "selection"
+	   }
+    ],
         "team": "demon",
         "sch_team": "恶魔",
         "firstNight": 0,
